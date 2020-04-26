@@ -2,7 +2,15 @@ package gRPCClient;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import org.proto.calculator.CalculatorServiceGrpc;
+import org.proto.calculator.Sum;
+import org.proto.calculator.SumRequest;
+import org.proto.calculator.SumResponse;
 import org.proto.dummy.DummyServiceGrpc;
+import org.proto.greet.GreetServiceGrpc;
+import org.proto.greet.Greeting;
+import org.proto.greet.GreetingRequest;
+import org.proto.greet.GreetingResponse;
 
 public class GreetingClient {
     public static void main(String[] args) {
@@ -12,13 +20,47 @@ public class GreetingClient {
                 .usePlaintext()
                 .build();
         System.out.println("Creating a stub");
-        //sync client
-        DummyServiceGrpc.DummyServiceBlockingStub syncClient = DummyServiceGrpc.newBlockingStub(managedChannel);
+        /*//sync client
+        //dummy
+        //DummyServiceGrpc.DummyServiceBlockingStub syncClient = DummyServiceGrpc.newBlockingStub(managedChannel);
         //async client
         // DummyServiceGrpc.DummyServiceFutureStub asyncClient=DummyServiceGrpc.newFutureStub(managedChannel);
 
         //do some thing here
-        //syncClient.dosomeMethod();
+        //syncClient.dosomeMethod();*/
+
+        //craeted a greet client
+        GreetServiceGrpc.GreetServiceBlockingStub greetClient = GreetServiceGrpc.newBlockingStub(managedChannel);
+
+        //creating a greeting meaasge using protocol buffer
+        Greeting greeting = Greeting.newBuilder()
+                .setFirstName("Bharat")
+                .setLastName("HM")
+                .build();
+
+        GreetingRequest request = GreetingRequest.newBuilder()
+                .setGreeting(greeting)
+                .build();
+
+        //calling rpc and getting ack response
+        GreetingResponse response = greetClient.greet(request);
+        System.out.println(response.getResult());
+
+        //calculator service
+        CalculatorServiceGrpc.CalculatorServiceBlockingStub calculatorClient=CalculatorServiceGrpc.newBlockingStub(managedChannel);
+
+        Sum sum=Sum.newBuilder()
+                .setA(10)
+                .setB(20)
+                .build();
+
+        SumRequest sumRequest=SumRequest.newBuilder()
+                .setSum(sum)
+                .build();
+
+        SumResponse sumResponse=calculatorClient.addition(sumRequest);
+        System.out.println(sumResponse.getResult());
+
         System.out.println("shutting down channel");
 
         managedChannel.shutdown();
