@@ -1,0 +1,19 @@
+syntax="proto3";
+
+option java_package="org.proto.prime";
+option java_multiple_files = true;
+
+
+
+message PrimeNoDecompositionRequest{
+ int32 pno=1;;
+}
+
+message PrimeNoDecompositionResponse{
+  int32 prime_factor=1;
+}
+
+service PrimeNoDecomposition{
+  rpc Prime(PrimeNoDecompositionRequest) returns(stream PrimeNoDecompositionResponse){};
+
+}
