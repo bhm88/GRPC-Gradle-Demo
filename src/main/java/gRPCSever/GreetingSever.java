@@ -10,6 +10,7 @@ public class GreetingSever {
         Server server = ServerBuilder.forPort(50051)
                 .addService(new GreetServiceImpl())
                 .addService(new CalculatorServiceImpl())
+                .addService(new PrimeServerImpl())
                 .build();
         server.start();
         System.out.println("Server Started");

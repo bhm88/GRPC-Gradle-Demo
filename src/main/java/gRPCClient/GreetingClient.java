@@ -7,10 +7,7 @@ import org.proto.calculator.Sum;
 import org.proto.calculator.SumRequest;
 import org.proto.calculator.SumResponse;
 import org.proto.dummy.DummyServiceGrpc;
-import org.proto.greet.GreetServiceGrpc;
-import org.proto.greet.Greeting;
-import org.proto.greet.GreetingRequest;
-import org.proto.greet.GreetingResponse;
+import org.proto.greet.*;
 
 public class GreetingClient {
     public static void main(String[] args) {
@@ -31,8 +28,9 @@ public class GreetingClient {
 
         //craeted a greet client
         GreetServiceGrpc.GreetServiceBlockingStub greetClient = GreetServiceGrpc.newBlockingStub(managedChannel);
-
+/*
         //creating a greeting meaasge using protocol buffer
+        //unary
         Greeting greeting = Greeting.newBuilder()
                 .setFirstName("Bharat")
                 .setLastName("HM")
@@ -44,7 +42,15 @@ public class GreetingClient {
 
         //calling rpc and getting ack response
         GreetingResponse response = greetClient.greet(request);
-        System.out.println(response.getResult());
+        System.out.println(response.getResult());*/
+
+        //server streaming
+        GreetManyRequest greetManyRequest=GreetManyRequest.newBuilder()
+                .setGreeting(Greeting.newBuilder().setFirstName("Bharat")).build();
+
+        greetClient.greetManyTimes(greetManyRequest).forEachRemaining(greetManyResponse -> {
+            System.out.println(greetManyResponse.getResult());
+        });
 
         //calculator service
         CalculatorServiceGrpc.CalculatorServiceBlockingStub calculatorClient=CalculatorServiceGrpc.newBlockingStub(managedChannel);
